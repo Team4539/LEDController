@@ -9,17 +9,20 @@
 
 Adafruit_NeoPixel strip = Adafruit_NeoPixel(NUM_LEDS, LED_PIN, NEO_GRB + NEO_KHZ800);
 
-#line 10 "C:\\2024-code\\LEDController\\LEDController.ino"
+String Mode = "off"; // Set the initial mode to off.
+
+#line 12 "C:\\2024-code\\LEDController\\LEDController.ino"
 void setup();
-#line 18 "C:\\2024-code\\LEDController\\LEDController.ino"
+#line 21 "C:\\2024-code\\LEDController\\LEDController.ino"
 void loop();
-#line 10 "C:\\2024-code\\LEDController\\LEDController.ino"
+#line 12 "C:\\2024-code\\LEDController\\LEDController.ino"
 void setup() {
   Serial.begin(9600);
   strip.begin();
   strip.show(); // Initialize all pixels to 'off'
   pinMode(TRIGGER_PIN, OUTPUT);
   pinMode(ECHO_PIN, INPUT);
+  Mode = "idle"; // Set the mode to idle.
 }
 
 void loop() {
@@ -30,24 +33,29 @@ void loop() {
   delayMicroseconds(10); 
   digitalWrite(TRIGGER_PIN, LOW);
   duration = pulseIn(ECHO_PIN, HIGH);
-  distance = (duration/2) / 74.676
-   Serial.print("Distance: ");
+  distance = (duration/2) / 74.676;
+  Serial.print("Distance: ");
   Serial.println(distance); 
   Serial.print(" inches");
-  
-  if (distance < 10) {  // Change this value to adjust the distance at which the sensor triggers the LEDs to turn green.
+
+  if (distance < 10) {  
+    Mode = "game time"; // Set the mode to game time.
     for(int i=0; i<strip.numPixels(); i++) {
       strip.setPixelColor(i, strip.Color(0, 255, 0)); // Green color.
     }
+  } else if (distance > 10 && Mode == "game time" ) {
+    for (int i=0; i<strip.numPixels(); i++) {
+      strip.setPixelColor(i, strip.Color(255, 0, 0)); // Red color.
+    }
   } else {
     for(int i=0; i<strip.numPixels(); i++) {
-      // Cycle through colors for idle phase.
-      int r = (i * 256 / strip.numPixels()) % 256;
-      int g = (i * 512 / strip.numPixels()) % 256;
-      int b = (i * 1024 / strip.numPixels()) % 256;
-      strip.setPixelColor(i, strip.Color(r, g, b));
-    }
+       if(i % 2 == 0) {
+        strip.setPixelColor(i, strip.Color(255,102,0)); //safety orange (Kaotic main color)
+    } else {
+        strip.setPixelColor(i, strip.Color(37, 150, 190)); // Blue color (Kaotic secondary color)
+    };
   }
   strip.show();
   delay(50);
+}
 }
