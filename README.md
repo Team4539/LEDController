@@ -15,3 +15,7 @@ This repository contains the source code for controlling LEDs using an Arduino U
 
 * Changes the LED state based off of the RoboRio's input and an Ultrasonic sensor's input *
 
+## Things needed todo
+
+* Change default state to game time incase connection between the Rio and arduino is severed
+* Add ultrasonic sensor failure code in LEDs to better diagnose 
