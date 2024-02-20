@@ -9,9 +9,9 @@ This repository contains the source code for controlling LEDs using an Arduino U
 
 ## Installation
 
-*Using the AdaFruit Neopixel Libary this code requires the use of an LED Strip. This also required the a RoboRio PWM port *
+* Using the AdaFruit Neopixel Libary this code requires the use of an LED Strip. This also required the a RoboRio PWM port *
 
 ## Usage
 
-Changes the LED state based off of the RoboRio's input and an Ultrasonic sensor's input
+* Changes the LED state based off of the RoboRio's input and an Ultrasonic sensor's input *
 
