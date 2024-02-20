@@ -2,10 +2,10 @@
 #include <FastLED.h>
 
 #define TRIGGER_PIN  9  // Arduino pin tied to trigger pin on the ultrasonic sensor.
-#define ECHO_PIN     10 // Arduino pin tied to echo pin on the ultrasonic sensor.
+#define ECHO_PIN 10 // Arduino pin tied to echo pin on the ultrasonic sensor.
 #define B_PIN 7  // Arduino pin connected to the B wire.
 #define D_PIN 8  // Arduino pin connected to the D wire.
-#define NUM_LEDS     30 // Number of NeoPixels
+#define NUM_LEDS 30 // Number of NeoPixels
 #define pwmPin  3 // Change this to the pin you've connected the PWM signal to
 
 
