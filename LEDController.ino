@@ -37,16 +37,28 @@ void loop() {
   Serial.print(" inches");
 
 if (Pulse <= 5000){
-  Mode = "Idle";
-} else if (Pulse > 5000 && Pulse <= 15000){
-  Mode = "Auto";
-}else {
   Mode = "game time";
+} else if (Pulse > 5000 && Pulse <= 15000){
+  Mode = "Idle";
+}else {
+  Mode = "Auto";
 }
 
 
+if (distance == 0){
+  for (int i = 0; i < strip.numPixels(); i++) {
+    // Red color
+    strip.setPixelColor(i, strip.Color(255, 0, 0));
+    strip.show();
+    delay(500); // Delay for half a second
 
-if (Mode == "Idle") {
+    // Orange color
+    strip.setPixelColor(i, strip.Color(255, 102, 0));
+    strip.show();
+    delay(500); // Delay for half a second
+  }
+}
+else if (Mode == "Idle") {
   for(int i=0; i<strip.numPixels(); i++) {
        if(i % 4 <2) {
         strip.setPixelColor(i, strip.Color(255,102,0)); //safety orange (Kaotic main color)

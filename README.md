@@ -17,5 +17,4 @@ This repository contains the source code for controlling LEDs using an Arduino U
 
 ## Things needed todo
 
-* Change default state to game time incase connection between the Rio and arduino is severed
-* Add ultrasonic sensor failure code in LEDs to better diagnose 
+* Nothing :>
