@@ -1,21 +1,24 @@
 #include <Adafruit_NeoPixel.h>
+#include <FastLED.h>
 
 #define TRIGGER_PIN  9  // Arduino pin tied to trigger pin on the ultrasonic sensor.
 #define ECHO_PIN     10 // Arduino pin tied to echo pin on the ultrasonic sensor.
-#define LED_PIN      6  // Arduino pin connected to the NeoPixels.
+#define B_PIN 7  // Arduino pin connected to the B wire.
+#define D_PIN 8  // Arduino pin connected to the D wire.
 #define NUM_LEDS     30 // Number of NeoPixels
 #define pwmPin  3 // Change this to the pin you've connected the PWM signal to
 
 
-Adafruit_NeoPixel strip = Adafruit_NeoPixel(NUM_LEDS, LED_PIN, NEO_GRB + NEO_KHZ800);
 
 String Mode = "off"; // Set the initial mode to off.
 int Pulse; 
 
+CRGB leds[NUM_LEDS]; // Declare the 'leds' array before calling the 'FastLED.addLeds' function.
+
 void setup() {
   Serial.begin(9600);
-  strip.begin();
-  strip.show(); // Initialize all pixels to 'off'
+  FastLED.addLeds<WS2812B, B_PIN, GRB>(leds, NUM_LEDS);
+  FastLED.addLeds<WS2812B, D_PIN, GRB>(leds, NUM_LEDS);
   pinMode(TRIGGER_PIN, OUTPUT);
   pinMode(ECHO_PIN, INPUT);
   pinMode(pwmPin, INPUT);
@@ -46,44 +49,44 @@ if (Pulse <= 5000){
 
 
 if (distance == 0){
-  for (int i = 0; i < strip.numPixels(); i++) {
+  for (int i = 0; i < NUM_LEDS; i++) {
     // Red color
-    strip.setPixelColor(i, strip.Color(255, 0, 0));
-    strip.show();
+    leds[i] = CRGB(255, 0, 0);
+    FastLED.show();
     delay(500); // Delay for half a second
 
     // Orange color
-    strip.setPixelColor(i, strip.Color(255, 102, 0));
-    strip.show();
+    leds[i] = CRGB(255, 102, 0);
+    FastLED.show();
     delay(500); // Delay for half a second
   }
 }
 else if (Mode == "Idle") {
-  for(int i=0; i<strip.numPixels(); i++) {
+  for(int i=0; i < NUM_LEDS ; i++) {
        if(i % 4 <2) {
-        strip.setPixelColor(i, strip.Color(255,102,0)); //safety orange (Kaotic main color)
+        leds[i] = CRGB(255, 102, 0); //safety orange (Kaotic main color)
     } else {
-        strip.setPixelColor(i, strip.Color(37, 150, 190)); // Eastern blue color (Kaotic secondary color)
+        leds[i] = CRGB(37, 150, 190); // Eastern blue color (Kaotic secondary color)
     };
   }
 } else if (Mode == "Auto" && distance > 10) {
-  for(int i=0; i<strip.numPixels(); i++) {
-    strip.setPixelColor(i, strip.Color(246, 7, 250)); // Purple color.
+  for(int i=0; i < NUM_LEDS; i++) {
+    leds[i] = CRGB(246, 7, 250); // Purple color.
   }
 } else if (Mode == "Auto" && distance < 10) {
-  for(int i=0; i<strip.numPixels(); i++) {
-    strip.setPixelColor(i, strip.Color(7, 246, 250)); // Cyan color.
+  for(int i=0; i < NUM_LEDS; i++) {
+    leds[i] = CRGB(7, 246, 250); // Cyan color.
   }
 } else if (Mode == "game time" && distance > 10) {
-  for (int i=0; i<strip.numPixels(); i++) {
-    strip.setPixelColor(i, strip.Color(255, 0, 0)); // Red color.
+  for (int i=0; i < NUM_LEDS; i++) {
+    leds[i] = CRGB(255, 0, 0); // Red color.
   }
 } else {
-  for(int i=0; i<strip.numPixels(); i++) {
-    strip.setPixelColor(i, strip.Color(0, 255, 0)); // Green color.
+  for(int i=0; i < NUM_LEDS; i++) {
+    leds[i] = CRGB(0, 255, 0); // Green color.
   }
 
-  strip.show();
+  FastLED.show();
   delay(50);
 }
 }
