@@ -1,2 +1,5 @@
-.build/
-.vscode/
+# Ignore build files
+/build/
+
+# Ignore Visual Studio Code settings
+/.vscode/
