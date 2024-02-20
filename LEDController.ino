@@ -48,7 +48,7 @@ if (Pulse <= 5000){
 
 if (Mode == "Idle") {
   for(int i=0; i<strip.numPixels(); i++) {
-       if(i % 2 == 0) {
+       if(i % 4 <2) {
         strip.setPixelColor(i, strip.Color(255,102,0)); //safety orange (Kaotic main color)
     } else {
         strip.setPixelColor(i, strip.Color(37, 150, 190)); // Eastern blue color (Kaotic secondary color)
