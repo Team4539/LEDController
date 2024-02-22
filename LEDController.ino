@@ -4,24 +4,31 @@
 #define TRIGGER_PIN  9  // Arduino pin tied to trigger pin on the ultrasonic sensor.
 #define ECHO_PIN 10 // Arduino pin tied to echo pin on the ultrasonic sensor.
 #define B_PIN 7  // Arduino pin connected to the B wire.
-#define D_PIN 8  // Arduino pin connected to the D wire.
-#define NUM_LEDS 30 // Number of NeoPixels
+#define NUM_LEDS 10 // Number of NeoPixels
 #define pwmPin  3 // Change this to the pin you've connected the PWM signal to
 
 
 
-String Mode = "off"; // Set the initial mode to off.
+String Mode = "game time"; // Set the initial mode to off.
 int Pulse; 
 
 CRGB leds[NUM_LEDS]; // Declare the 'leds' array before calling the 'FastLED.addLeds' function.
 
 void setup() {
   Serial.begin(9600);
-  FastLED.addLeds<WS2812B, B_PIN, GRB>(leds, NUM_LEDS);
-  FastLED.addLeds<WS2812B, D_PIN, GRB>(leds, NUM_LEDS);
+  FastLED.addLeds<WS2812B, B_PIN, RGB>(leds, NUM_LEDS);
   pinMode(TRIGGER_PIN, OUTPUT);
   pinMode(ECHO_PIN, INPUT);
   pinMode(pwmPin, INPUT);
+
+   // Startup sequence
+  for(int i = 0; i < NUM_LEDS; i++) {
+    CRGB color = (i / 4) % 2 == 0 ? CRGB(255, 102, 0) /*safety orange*/ : CRGB(37, 150, 190); /*Eastern blue*/
+    leds[i] = color;
+    FastLED.show();
+    delay(100);
+     
+  }
 }
 
 void loop() {
@@ -34,6 +41,8 @@ void loop() {
   duration = pulseIn(ECHO_PIN, HIGH);
   Pulse = pulseIn(pwmPin, HIGH);
   distance = (duration/2) / 74.676;
+  
+ 
   
   Serial.print("Distance: ");
   Serial.println(distance); 
@@ -82,9 +91,7 @@ else if (Mode == "Idle") {
     leds[i] = CRGB(255, 0, 0); // Red color.
   }
 } else {
-  for(int i=0; i < NUM_LEDS; i++) {
-    leds[i] = CRGB(0, 255, 0); // Green color.
-  }
+  fill_solid(leds, NUM_LEDS, CRGB(255, 255, 0)); // Turn off the LEDs.
 
   FastLED.show();
   delay(50);
