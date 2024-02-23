@@ -4,7 +4,7 @@
 #define TRIGGER_PIN  9  // Arduino pin tied to trigger pin on the ultrasonic sensor.
 #define ECHO_PIN 10 // Arduino pin tied to echo pin on the ultrasonic sensor.
 #define B_PIN 7  // Arduino pin connected to the B wire.
-#define NUM_LEDS 10 // Number of NeoPixels
+#define NUM_LEDS 60 // Number of NeoPixels
 #define pwmPin  3 // Change this to the pin you've connected the PWM signal to
 
 
@@ -42,11 +42,12 @@ void loop() {
   Pulse = pulseIn(pwmPin, HIGH);
   distance = (duration/2) / 74.676;
   
- 
+ Serial.print("Pulse: ");
+  Serial.println(Pulse);
   
-  Serial.print("Distance: ");
+  /*Serial.print("Distance: ");
   Serial.println(distance); 
-  Serial.print(" inches");
+  Serial.print(" inches");*/
 
 if (Pulse <= 5000){
   Mode = "game time";
@@ -54,23 +55,21 @@ if (Pulse <= 5000){
   Mode = "Idle";
 }else {
   Mode = "Auto";
+} 
+
+
+/*if (distance == 0){
+  // Red color
+fill_solid(leds, NUM_LEDS, CRGB(255, 0, 0));
+FastLED.show();
+delay(1250); // Delay for half a second
+
+// Orange color
+fill_solid(leds, NUM_LEDS, CRGB(255, 102, 0));
+FastLED.show();
+delay(500); // Delay for half a second
 }
-
-
-if (distance == 0){
-  for (int i = 0; i < NUM_LEDS; i++) {
-    // Red color
-    leds[i] = CRGB(255, 0, 0);
-    FastLED.show();
-    delay(500); // Delay for half a second
-
-    // Orange color
-    leds[i] = CRGB(255, 102, 0);
-    FastLED.show();
-    delay(500); // Delay for half a second
-  }
-}
-else if (Mode == "Idle") {
+else */if (Mode == "Idle") {
   for(int i=0; i < NUM_LEDS ; i++) {
        if(i % 4 <2) {
         leds[i] = CRGB(255, 102, 0); //safety orange (Kaotic main color)
@@ -79,20 +78,19 @@ else if (Mode == "Idle") {
     };
   }
 } else if (Mode == "Auto" && distance > 10) {
-  for(int i=0; i < NUM_LEDS; i++) {
-    leds[i] = CRGB(246, 7, 250); // Purple color.
-  }
-} else if (Mode == "Auto" && distance < 10) {
-  for(int i=0; i < NUM_LEDS; i++) {
-    leds[i] = CRGB(7, 246, 250); // Cyan color.
-  }
-} else if (Mode == "game time" && distance > 10) {
-  for (int i=0; i < NUM_LEDS; i++) {
-    leds[i] = CRGB(255, 0, 0); // Red color.
-  }
-} else {
-  fill_solid(leds, NUM_LEDS, CRGB(255, 255, 0)); // Turn off the LEDs.
+  
+    fill_solid(leds, NUM_LEDS, CRGB(246, 7, 250)); // Purple color
+    FastLED.show();
 
+  }
+ else if (Mode == "Auto" && distance < 10) {
+      fill_solid(leds, NUM_LEDS, CRGB(7, 246, 250)); // Cyan color
+      FastLED.show();
+} else if (Mode == "game time" && distance > 10 ) {
+    fill_solid(leds, NUM_LEDS, CRGB(255, 0, 0)); // Red color
+    FastLED.show();
+} else if (Mode == "game time" && distance < 10 && distance > 0) {
+  fill_solid(leds, NUM_LEDS, CRGB(124,252,0)); 
   FastLED.show();
   delay(50);
 }
