@@ -24,56 +24,34 @@ void setup() {
   pinMode(pwmpinGround, OUTPUT);
   digitalWrite(pwmpinGround, LOW);
 // Startup sequence
-for(int i = 0; i < NUM_LEDS; i += 4) {
+// Startup sequence
+for(int i = 0; i < NUM_LEDS; i++) {
   CRGB color = (i / 4) % 2 == 0 ? CRGB(255, 102, 0) /*safety orange*/ : CRGB(37, 150, 190); /*Eastern blue*/
+  leds[i] = color;
+  FastLED.show();
+  delay(50);
+}
 
-  // Fade in effect
-  for(int brightness = 0; brightness <= 255; brightness += 5) {
-    for(int j = 0; j < 4; j++) {
-      if(i + j >= NUM_LEDS) break; // Prevent going out of bounds
-      leds[i + j] = color;
-      leds[i + j].fadeToBlackBy(255 - brightness);
-    }
-    FastLED.show();
-    delay(1);
+// Dramatic blinking
+for(int j = 0; j < 3; j++) {
+  fill_solid(leds, NUM_LEDS, CRGB::Black);
+  FastLED.show();
+  delay(500);
+  for(int i = 0; i < NUM_LEDS; i++) {
+    CRGB color = (i / 4) % 2 == 0 ? CRGB(255, 102, 0) /*safety orange*/ : CRGB(37, 150, 190); /*Eastern blue*/
+    leds[i] = color;
   }
-
-  // Fade out effect
-  for(int brightness = 255; brightness >= 0; brightness -= 5) {
-    for(int j = 0; j < 4; j++) {
-      if(i + j >= NUM_LEDS) break; // Prevent going out of bounds
-      leds[i + j] = color;
-      leds[i + j].fadeToBlackBy(255 - brightness);
-
-    }
-    FastLED.show();
-    delay(1);
-  }
-
-  // Flash effect
-  for(int k = 0; k < 3; k++) {
-    for(int j = 0; j < 4; j++) {
-      if(i + j >= NUM_LEDS) break; // Prevent going out of bounds
-      leds[i + j] = CRGB::Black;
-    }
-    FastLED.show();
-    delay(100);
-    for(int j = 0; j < 4; j++) {
-      if(i + j >= NUM_LEDS) break; // Prevent going out of bounds
-      leds[i + j] = color;
-    }
-    FastLED.show();
-    delay(100);
-  }
+  FastLED.show();
+  delay(500);
 }
 }
 
 void loop() {
   long duration, distance;
   digitalWrite(TRIGGER_PIN, LOW);  
-  delayMicroseconds(2); 
+  delayMicroseconds(1); 
   digitalWrite(TRIGGER_PIN, HIGH);
-  delayMicroseconds(10); 
+  delayMicroseconds(5); 
   digitalWrite(TRIGGER_PIN, LOW);
   duration = pulseIn(ECHO_PIN, HIGH);
   Pulse = pulseIn(pwmPin, HIGH);
@@ -82,9 +60,9 @@ void loop() {
  Serial.print("Pulse: ");
   Serial.println(Pulse);
   
-  /*Serial.print("Distance: ");
+  Serial.print("Distance: ");
   Serial.println(distance); 
-  Serial.print(" inches");*/
+  Serial.print(" inches");
 
 if (Pulse <= 5000){
   Mode = "game time";
@@ -129,6 +107,6 @@ else if (Mode == "Idle") {
 } else if (Mode == "game time" && distance < 10 && distance > 0) {
   fill_solid(leds, NUM_LEDS, CRGB(124,252,0)); 
   FastLED.show();
-  delay(50);
+  delay(5);
 }
 }
