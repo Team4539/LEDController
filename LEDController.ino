@@ -23,11 +23,21 @@ void setup() {
   pinMode(pwmPin, INPUT);
   pinMode(pwmpinGround, OUTPUT);
   digitalWrite(pwmpinGround, LOW);
-// Startup sequence
-// Startup sequence
-for(int i = 0; i < NUM_LEDS; i++) {
-  CRGB color = (i / 4) % 2 == 0 ? CRGB(255, 102, 0) /*safety orange*/ : CRGB(37, 150, 190); /*Eastern blue*/
-  leds[i] = color;
+  fill_solid(leds, NUM_LEDS, CRGB::Black);
+  FastLED.show();
+  // Startup sequence
+  for(int i = 0; i < NUM_LEDS; i++) {
+    leds[i] = CRGB::White; // Change this to the color you want
+    FastLED.show();
+    delay(100); // Change this to control the speed of the flow
+  }
+  // Startup sequence
+  int iterations = 600; // Number of iterations for 30 seconds
+for(int k = 0; k < iterations; k++) {
+  for(int i = 0; i < NUM_LEDS; i++) {
+    CRGB color = ((i + k) / 4) % 2 == 0 ? CRGB(255, 102, 0) /*safety orange*/ : CRGB(37, 150, 190); /*Eastern blue*/
+    leds[i] = color;
+  }
   FastLED.show();
   delay(50);
 }
