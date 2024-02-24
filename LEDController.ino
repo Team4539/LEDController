@@ -33,16 +33,16 @@ for(int i = 0; i < NUM_LEDS; i++) {
 }
 
 // Dramatic blinking
-for(int j = 0; j < 3; j++) {
+for(int j = 0; j < 10; j++) {
   fill_solid(leds, NUM_LEDS, CRGB::Black);
   FastLED.show();
-  delay(500);
+  delay(50);
   for(int i = 0; i < NUM_LEDS; i++) {
     CRGB color = (i / 4) % 2 == 0 ? CRGB(255, 102, 0) /*safety orange*/ : CRGB(37, 150, 190); /*Eastern blue*/
     leds[i] = color;
   }
   FastLED.show();
-  delay(500);
+  delay(50);
 }
 }
 
@@ -51,7 +51,7 @@ void loop() {
   digitalWrite(TRIGGER_PIN, LOW);  
   delayMicroseconds(1); 
   digitalWrite(TRIGGER_PIN, HIGH);
-  delayMicroseconds(5); 
+  delayMicroseconds(1); 
   digitalWrite(TRIGGER_PIN, LOW);
   duration = pulseIn(ECHO_PIN, HIGH);
   Pulse = pulseIn(pwmPin, HIGH);
@@ -102,11 +102,12 @@ else if (Mode == "Idle") {
       fill_solid(leds, NUM_LEDS, CRGB(7, 246, 250)); // Cyan color
       FastLED.show();
 } else if (Mode == "game time" && distance > 10 ) {
+  
     fill_solid(leds, NUM_LEDS, CRGB(255, 0, 0)); // Red color
     FastLED.show();
 } else if (Mode == "game time" && distance < 10 && distance > 0) {
   fill_solid(leds, NUM_LEDS, CRGB(124,252,0)); 
   FastLED.show();
-  delay(5);
+  delay(2);
 }
 }
