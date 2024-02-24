@@ -1,11 +1,12 @@
 #include <Adafruit_NeoPixel.h>
 #include <FastLED.h>
 
-#define TRIGGER_PIN  9  // Arduino pin tied to trigger pin on the ultrasonic sensor.
+#define TRIGGER_PIN  8  // Arduino pin tied to trigger pin on the ultrasonic sensor.
 #define ECHO_PIN 10 // Arduino pin tied to echo pin on the ultrasonic sensor.
 #define B_PIN 7  // Arduino pin connected to the B wire.
 #define NUM_LEDS 60 // Number of NeoPixels
 #define pwmPin  3 // Change this to the pin you've connected the PWM signal to
+#define pwmpinGround 13
 
 
 
@@ -20,15 +21,51 @@ void setup() {
   pinMode(TRIGGER_PIN, OUTPUT);
   pinMode(ECHO_PIN, INPUT);
   pinMode(pwmPin, INPUT);
+  pinMode(pwmpinGround, OUTPUT);
+  digitalWrite(pwmpinGround, LOW);
+// Startup sequence
+for(int i = 0; i < NUM_LEDS; i += 4) {
+  CRGB color = (i / 4) % 2 == 0 ? CRGB(255, 102, 0) /*safety orange*/ : CRGB(37, 150, 190); /*Eastern blue*/
 
-   // Startup sequence
-  for(int i = 0; i < NUM_LEDS; i++) {
-    CRGB color = (i / 4) % 2 == 0 ? CRGB(255, 102, 0) /*safety orange*/ : CRGB(37, 150, 190); /*Eastern blue*/
-    leds[i] = color;
+  // Fade in effect
+  for(int brightness = 0; brightness <= 255; brightness += 5) {
+    for(int j = 0; j < 4; j++) {
+      if(i + j >= NUM_LEDS) break; // Prevent going out of bounds
+      leds[i + j] = color;
+      leds[i + j].fadeToBlackBy(255 - brightness);
+    }
+    FastLED.show();
+    delay(1);
+  }
+
+  // Fade out effect
+  for(int brightness = 255; brightness >= 0; brightness -= 5) {
+    for(int j = 0; j < 4; j++) {
+      if(i + j >= NUM_LEDS) break; // Prevent going out of bounds
+      leds[i + j] = color;
+      leds[i + j].fadeToBlackBy(255 - brightness);
+
+    }
+    FastLED.show();
+    delay(1);
+  }
+
+  // Flash effect
+  for(int k = 0; k < 3; k++) {
+    for(int j = 0; j < 4; j++) {
+      if(i + j >= NUM_LEDS) break; // Prevent going out of bounds
+      leds[i + j] = CRGB::Black;
+    }
     FastLED.show();
     delay(100);
-     
+    for(int j = 0; j < 4; j++) {
+      if(i + j >= NUM_LEDS) break; // Prevent going out of bounds
+      leds[i + j] = color;
+    }
+    FastLED.show();
+    delay(100);
   }
+}
 }
 
 void loop() {
@@ -58,7 +95,7 @@ if (Pulse <= 5000){
 } 
 
 
-/*if (distance == 0){
+if (distance == 0){
   // Red color
 fill_solid(leds, NUM_LEDS, CRGB(255, 0, 0));
 FastLED.show();
@@ -69,7 +106,7 @@ fill_solid(leds, NUM_LEDS, CRGB(255, 102, 0));
 FastLED.show();
 delay(500); // Delay for half a second
 }
-else */if (Mode == "Idle") {
+else if (Mode == "Idle") {
   for(int i=0; i < NUM_LEDS ; i++) {
        if(i % 4 <2) {
         leds[i] = CRGB(255, 102, 0); //safety orange (Kaotic main color)
