@@ -6,6 +6,7 @@ This repository contains the source code for controlling LEDs using an Arduino U
 
 - [Installation](#installation)
 - [Usage](#usage)
+- [Todo](#things-needed-todo)
 
 ## Installation
 
