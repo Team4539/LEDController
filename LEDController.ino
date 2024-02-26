@@ -28,28 +28,25 @@ void setup() {
   FastLED.show();
   // Startup sequence
   for(int i = 0; i < NUM_LEDS; i++) {
-    // Create a color based on the current LED's position
-    // This will create a gradient effect across the LEDs
+   
     uint8_t hue = map(i, 0, NUM_LEDS, 0, 255);
     
-    // Set the LED to the calculated color
-    leds[i] = CHSV(hue, 255, 255); // CHSV is a color model used in FastLED
+    leds[i] = CHSV(hue, 255, 255); 
     
     FastLED.show();
-    delay(100); // Change this to control the speed of the flow
+    delay(100); 
   }
   // Transition sequence to startup 2
 for(int j = 0; j < 256; j++) {
   for(int i = 0; i < NUM_LEDS; i++) {
     CRGB color = ((i + j) / 4) % 2 == 0 ? CRGB(255, 102, 0) /*safety orange*/ : CRGB(37, 150, 190); /*Eastern blue*/
-    // Blend the current color of the LED with the new color
     leds[i] = nblend(leds[i], color, j);
   }
   FastLED.show();
-  delay(10); // Change this to control the speed of the transition
+  delay(10); 
 }
   // Startup 2 sequence
-  int iterations = 600; // Number of iterations for 30 seconds
+  int iterations = 600; 
 for(int k = 0; k < iterations; k++) {
   for(int i = 0; i < NUM_LEDS; i++) {
     CRGB color = ((i + k) / 4) % 2 == 0 ? CRGB(255, 102, 0) /*safety orange*/ : CRGB(37, 150, 190); /*Eastern blue*/
@@ -67,7 +64,7 @@ for(int j = 0; j < 10; j++) {
       leds[i].fadeToBlackBy(k);
     }
     FastLED.show();
-    delay(10); // Change this to control the speed of the fade
+    delay(10); 
   }
 
   // Fade in
@@ -78,7 +75,7 @@ for(int j = 0; j < 10; j++) {
       leds[i].fadeToBlackBy(255 - k);
     }
     FastLED.show();
-    delay(10); // Change this to control the speed of the fade
+    delay(10); 
   }
 }
 }
