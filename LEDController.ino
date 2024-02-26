@@ -27,11 +27,27 @@ void setup() {
   FastLED.show();
   // Startup sequence
   for(int i = 0; i < NUM_LEDS; i++) {
-    leds[i] = CRGB::White; // Change this to the color you want
+    // Create a color based on the current LED's position
+    // This will create a gradient effect across the LEDs
+    uint8_t hue = map(i, 0, NUM_LEDS, 0, 255);
+    
+    // Set the LED to the calculated color
+    leds[i] = CHSV(hue, 255, 255); // CHSV is a color model used in FastLED
+    
     FastLED.show();
     delay(100); // Change this to control the speed of the flow
   }
-  // Startup sequence
+  // Transition sequence to startup 2
+for(int j = 0; j < 256; j++) {
+  for(int i = 0; i < NUM_LEDS; i++) {
+    CRGB color = ((i + j) / 4) % 2 == 0 ? CRGB(255, 102, 0) /*safety orange*/ : CRGB(37, 150, 190); /*Eastern blue*/
+    // Blend the current color of the LED with the new color
+    leds[i] = nblend(leds[i], color, j);
+  }
+  FastLED.show();
+  delay(10); // Change this to control the speed of the transition
+}
+  // Startup 2 sequence
   int iterations = 600; // Number of iterations for 30 seconds
 for(int k = 0; k < iterations; k++) {
   for(int i = 0; i < NUM_LEDS; i++) {
@@ -42,17 +58,27 @@ for(int k = 0; k < iterations; k++) {
   delay(50);
 }
 
-// Dramatic blinking
+// Smooth blinking
 for(int j = 0; j < 10; j++) {
-  fill_solid(leds, NUM_LEDS, CRGB::Black);
-  FastLED.show();
-  delay(50);
-  for(int i = 0; i < NUM_LEDS; i++) {
-    CRGB color = (i / 4) % 2 == 0 ? CRGB(255, 102, 0) /*safety orange*/ : CRGB(37, 150, 190); /*Eastern blue*/
-    leds[i] = color;
+  // Fade out
+  for(int k = 255; k >= 0; k -= 5) {
+    for(int i = 0; i < NUM_LEDS; i++) {
+      leds[i].fadeToBlackBy(k);
+    }
+    FastLED.show();
+    delay(10); // Change this to control the speed of the fade
   }
-  FastLED.show();
-  delay(50);
+
+  // Fade in
+  for(int k = 0; k <= 255; k += 5) {
+    for(int i = 0; i < NUM_LEDS; i++) {
+      CRGB color = (i / 4) % 2 == 0 ? CRGB(255, 102, 0) /*safety orange*/ : CRGB(37, 150, 190); /*Eastern blue*/
+      leds[i] = color;
+      leds[i].fadeToBlackBy(255 - k);
+    }
+    FastLED.show();
+    delay(10); // Change this to control the speed of the fade
+  }
 }
 }
 
