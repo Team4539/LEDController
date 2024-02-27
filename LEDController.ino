@@ -26,38 +26,47 @@ void setup() {
   digitalWrite(pwmpinGround, LOW);
   fill_solid(leds, NUM_LEDS, CRGB::Black);
   FastLED.show();
+
   // Startup sequence
   for(int i = 0; i < NUM_LEDS; i++) {
-   
-    uint8_t hue = map(i, 0, NUM_LEDS, 0, 255);
-    
-    leds[i] = CHSV(hue, 255, 255); 
-    
+    leds[i] = CRGB::White; 
     FastLED.show();
     delay(100); 
   }
+
   // Transition sequence to startup 2
-for(int j = 0; j < 256; j++) {
-  for(int i = 0; i < NUM_LEDS; i++) {
-    CRGB color = ((i + j) / 4) % 2 == 0 ? CRGB(255, 102, 0) /*safety orange*/ : CRGB(37, 150, 190); /*Eastern blue*/
-    leds[i] = nblend(leds[i], color, j);
+  int waveSpeed = 4;
+  for(int j = 0; j < 256; j++) {
+    for(int i = 0; i < NUM_LEDS; i++) {
+      CRGB color1 = CRGB(255, 102, 0); // safety orange
+      CRGB color2 = CRGB(37, 150, 190); // Eastern blue
+      CRGB color = ((i + j) / waveSpeed) % 2 == 0 ? color1 : color2;
+      leds[i] = CRGB(
+        lerp8by8(leds[i].r, color.r, j),
+        lerp8by8(leds[i].g, color.g, j),
+        lerp8by8(leds[i].b, color.b, j)
+      );
+    }
+    FastLED.show();
+    delay(10);
+    waveSpeed = 4 + log(j+1); // Logarithmic increment for slowing down wave
   }
-  FastLED.show();
-  delay(10); 
-}
+
   // Startup 2 sequence
   int iterations = 600; 
-for(int k = 0; k < iterations; k++) {
-  for(int i = 0; i < NUM_LEDS; i++) {
-    CRGB color = ((i + k) / 4) % 2 == 0 ? CRGB(255, 102, 0) /*safety orange*/ : CRGB(37, 150, 190); /*Eastern blue*/
-    leds[i] = color;
+  for(int k = 0; k < iterations; k++) {
+    for(int i = 0; i < NUM_LEDS; i++) {
+      CRGB color1 = CRGB(255, 102, 0); // safety orange
+      CRGB color2 = CRGB(37, 150, 190); // Eastern blue
+      CRGB color = ((i + k) / waveSpeed) % 2 == 0 ? color1 : color2;
+      leds[i] = color;
+    }
+    FastLED.show();
+    delay(50);
   }
-  FastLED.show();
-  delay(50);
-}
 
-// Smooth blinking
-for(int j = 0; j < 10; j++) {
+  // Smooth blinking
+for(int j = 0; j < 3; j++) {
   // Fade out
   for(int k = 255; k >= 0; k -= 5) {
     for(int i = 0; i < NUM_LEDS; i++) {
@@ -79,7 +88,6 @@ for(int j = 0; j < 10; j++) {
   }
 }
 }
-
 void loop() {
   static unsigned long lastTriggerTime = 0;
   static unsigned long lastLEDUpdateTime = 0;
@@ -148,7 +156,6 @@ if (millis() - lastLEDUpdateTime >= 1250) {
   } else if (Mode == "game time" && distance < 10 && distance > 0) {
     fill_solid(leds, NUM_LEDS, CRGB(124,252,0)); 
     FastLED.show();
-    delay(2);
   }
   lastLEDUpdateTime = millis();
 }
