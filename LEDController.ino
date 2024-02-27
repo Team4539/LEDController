@@ -109,16 +109,18 @@ void loop() {
   Serial.println(distance); 
   Serial.print(" inches");
 
-if (Pulse <= 5000){
-  Mode = "game time";
-} else if (Pulse > 5000 && Pulse <= 15000){
+if (Pulse <= 100){
   Mode = "Idle";
-}else {
+} else if (Pulse > 1900 && Pulse <= 2100){
   Mode = "Auto";
+}else {
+  Mode = "game time";
 } 
+ Serial.print("Mode: ");
+  Serial.println(Mode);
+  Serial.println(" ");
 
-if (millis() - lastLEDUpdateTime >= 1250) {
-  if (distance == 0){
+    if (distance == 0){
     // Red color
   fill_solid(leds, NUM_LEDS, CRGB(255, 0, 0));
   FastLED.show();
@@ -136,6 +138,7 @@ if (millis() - lastLEDUpdateTime >= 1250) {
       } else {
           leds[i] = CRGB(37, 150, 190); // Eastern blue color (Kaotic secondary color)
       };
+      FastLED.show();
     }
   } else if (Mode == "Auto" && distance > 10) {
     
@@ -154,6 +157,4 @@ if (millis() - lastLEDUpdateTime >= 1250) {
     fill_solid(leds, NUM_LEDS, CRGB(124,252,0)); 
     FastLED.show();
   }
-  lastLEDUpdateTime = millis();
-}
 }
