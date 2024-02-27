@@ -6,7 +6,6 @@
 #define B_PIN 7  // Arduino pin connected to the B wire.
 #define NUM_LEDS 60 // Number of NeoPixels
 #define pwmPin  3 // Change this to the pin you've connected the PWM signal to
-#define pwmpinGround 13
 
 
 
@@ -22,8 +21,6 @@ void setup() {
   pinMode(TRIGGER_PIN, OUTPUT);
   pinMode(ECHO_PIN, INPUT);
   pinMode(pwmPin, INPUT);
-  pinMode(pwmpinGround, OUTPUT);
-  digitalWrite(pwmpinGround, LOW);
   fill_solid(leds, NUM_LEDS, CRGB::Black);
   FastLED.show();
 
@@ -35,7 +32,7 @@ void setup() {
   }
 
   // Transition sequence to startup 2
-  int waveSpeed = 4;
+  int waveSpeed = 5;
   for(int j = 0; j < 256; j++) {
     for(int i = 0; i < NUM_LEDS; i++) {
       CRGB color1 = CRGB(255, 102, 0); // safety orange
@@ -92,7 +89,8 @@ void loop() {
   static unsigned long lastTriggerTime = 0;
   static unsigned long lastLEDUpdateTime = 0;
   long duration, distance;
-  
+  Pulse = pulseIn(pwmPin, HIGH);
+
   if (millis() - lastTriggerTime >= 1) {
     digitalWrite(TRIGGER_PIN, LOW);  
     delayMicroseconds(1); 
@@ -100,7 +98,6 @@ void loop() {
     delayMicroseconds(1); 
     digitalWrite(TRIGGER_PIN, LOW);
     duration = pulseIn(ECHO_PIN, HIGH);
-    Pulse = pulseIn(pwmPin, HIGH);
     distance = (duration/2) / 74.676;
     lastTriggerTime = millis();
   }
