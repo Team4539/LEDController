@@ -5,8 +5,8 @@
 #define ECHO_PIN 9 // Arduino pin tied to echo pin on the ultrasonic sensor.
 #define B_PIN 10  // Arduino pin connected to the B wire.
 #define NUM_LEDS 60 // Number of NeoPixels
-#define pwmPinSnd  3 // Change this to the pin you've connected the PWM signal to
-#define pwmPinRcv 1 // Change this to the pin you've connected the PWM signal to
+#define pwmPinSnd  1 // Change this to the pin you've connected the PWM signal to
+#define pwmPinRcv 3 // Change this to the pin you've connected the PWM signal to
 
 
 
@@ -26,6 +26,7 @@ void setup() {
   pinMode(ECHO_PIN, INPUT);
   pinMode(pwmPinRcv, INPUT);
   pinMode(pwmPinSnd, OUTPUT);
+  digitalWrite(pwmPinSnd, LOW);
   fill_solid(leds, NUM_LEDS, CRGB::Black);
   FastLED.show();
 
@@ -150,22 +151,18 @@ if (Pulse <= 100){
     
       fill_solid(leds, NUM_LEDS, CRGB(246, 7, 250)); // Purple color
       FastLED.show();
-      analogWrite(pwmPinSnd, 0); 
-
-    }
+   }
   else if (Mode == "Auto" && distance < 10) {
         fill_solid(leds, NUM_LEDS, CRGB(7, 246, 250)); // Cyan color
         FastLED.show();
-        analogWrite(pwmPinSnd, dutyCycle);
 
   } else if (Mode == "game time" && distance > 10 ) {
     
       fill_solid(leds, NUM_LEDS, CRGB(255, 0, 0)); // Red color
       FastLED.show();
-      analogWrite(pwmPinSnd, 0);
   } else if (Mode == "game time" && distance < 10 && distance > 0) {
     fill_solid(leds, NUM_LEDS, CRGB(124,252,0)); 
     FastLED.show();
-    analogWrite(pwmPinSnd, dutyCycle);
+      digitalWrite(pwmPinSnd, HIGH);
   }
 }
