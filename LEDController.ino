@@ -38,7 +38,7 @@ void setup() {
   }
 
   // Transition sequence to startup 2
-  int waveSpeed = 5;
+  int waveSpeed = 5.5;
   for(int j = 0; j < 256; j++) {
     for(int i = 0; i < NUM_LEDS; i++) {
       CRGB color1 = CRGB(255, 102, 0); // safety orange
@@ -95,7 +95,7 @@ void loop() {
   static unsigned long lastTriggerTime = 0;
   static unsigned long lastLEDUpdateTime = 0;
   long duration, distance;
-  
+  Pulse = pulseIn(pwmPinRcv, HIGH);
 
   if (millis() - lastTriggerTime >= 1) {
     digitalWrite(TRIGGER_PIN, LOW);  
