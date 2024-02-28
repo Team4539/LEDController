@@ -15,6 +15,10 @@ String Mode = "game time"; // Set the initial mode to off.
 int Pulse; 
 int SND;
 int dutyCycle = 128; // Set the initial duty cycle to 50%.
+unsigned long startTime = millis(); // get the start time
+unsigned long runTime = 30000;
+int i, j, k = 256, 
+waveSpeed = 4 ;
 
 CRGB leds[NUM_LEDS]; // Declare the 'leds' array before calling the 'FastLED.addLeds' function.
 
@@ -37,37 +41,27 @@ void setup() {
     delay(100); 
   }
 
-  // Transition sequence to startup 2
-  int waveSpeed = 5.5;
-  for(int j = 0; j < 256; j++) {
-    for(int i = 0; i < NUM_LEDS; i++) {
-      CRGB color1 = CRGB(255, 102, 0); // safety orange
-      CRGB color2 = CRGB(37, 150, 190); // Eastern blue
-      CRGB color = ((i + j) / waveSpeed) % 2 == 0 ? color1 : color2;
-      leds[i] = CRGB(
-        lerp8by8(leds[i].r, color.r, j),
-        lerp8by8(leds[i].g, color.g, j),
-        lerp8by8(leds[i].b, color.b, j)
-      );
-    }
-    FastLED.show();
-    delay(10);
-    waveSpeed = 4 + log(j+1); // Logarithmic increment for slowing down wave
-  }
+int j = 0; // Initialize j outside of the while loop
 
-  // Startup 2 sequence
-  int iterations = 600; 
-  for(int k = 0; k < iterations; k++) {
-    for(int i = 0; i < NUM_LEDS; i++) {
-      CRGB color1 = CRGB(255, 102, 0); // safety orange
-      CRGB color2 = CRGB(37, 150, 190); // Eastern blue
-      CRGB color = ((i + k) / waveSpeed) % 2 == 0 ? color1 : color2;
-      leds[i] = color;
-    }
-    FastLED.show();
-    delay(50);
+while(millis() - startTime < runTime && j < 256) { // run for approximately 30 seconds or until j < 256
+  for(int i = 0; i < NUM_LEDS; i++) {
+    CRGB color1 = CRGB(255, 102, 0); // safety orange
+    CRGB color2 = CRGB(37, 150, 190); // Eastern blue
+    CRGB color = ((i + j) / waveSpeed) % 2 == 0 ? color1 : color2;
+    leds[i] = CRGB(
+      lerp8by8(leds[i].r, color.r, j),
+      lerp8by8(leds[i].g, color.g, j),
+      lerp8by8(leds[i].b, color.b, j)
+    );
   }
+  FastLED.show();
+  delay(60);
+  waveSpeed = 4 + log(j+1); // Logarithmic increment for slowing down wave
+  j++; // Increment j at the end of each while loop iteration
+}
 
+  
+ 
   // Smooth blinking
 for(int j = 0; j < 3; j++) {
   // Fade out
@@ -91,6 +85,7 @@ for(int j = 0; j < 3; j++) {
   }
 }
 }
+
 void loop() {
   static unsigned long lastTriggerTime = 0;
   static unsigned long lastLEDUpdateTime = 0;
