@@ -2,15 +2,19 @@
 #include <FastLED.h>
 
 #define TRIGGER_PIN  8  // Arduino pin tied to trigger pin on the ultrasonic sensor.
-#define ECHO_PIN 10 // Arduino pin tied to echo pin on the ultrasonic sensor.
-#define B_PIN 7  // Arduino pin connected to the B wire.
+#define ECHO_PIN 9 // Arduino pin tied to echo pin on the ultrasonic sensor.
+#define B_PIN 10  // Arduino pin connected to the B wire.
 #define NUM_LEDS 60 // Number of NeoPixels
-#define pwmPin  3 // Change this to the pin you've connected the PWM signal to
+#define pwmPinSnd  3 // Change this to the pin you've connected the PWM signal to
+#define pwmPinRcv 1 // Change this to the pin you've connected the PWM signal to
+
 
 
 
 String Mode = "game time"; // Set the initial mode to off.
 int Pulse; 
+int SND;
+int dutyCycle = 128; // Set the initial duty cycle to 50%.
 
 CRGB leds[NUM_LEDS]; // Declare the 'leds' array before calling the 'FastLED.addLeds' function.
 
@@ -20,7 +24,8 @@ void setup() {
   FastLED.addLeds<WS2812B, B_PIN, RGB>(leds, NUM_LEDS);
   pinMode(TRIGGER_PIN, OUTPUT);
   pinMode(ECHO_PIN, INPUT);
-  pinMode(pwmPin, INPUT);
+  pinMode(pwmPinRcv, INPUT);
+  pinMode(pwmPinSnd, OUTPUT);
   fill_solid(leds, NUM_LEDS, CRGB::Black);
   FastLED.show();
 
@@ -89,7 +94,8 @@ void loop() {
   static unsigned long lastTriggerTime = 0;
   static unsigned long lastLEDUpdateTime = 0;
   long duration, distance;
-  Pulse = pulseIn(pwmPin, HIGH);
+  Pulse = pulseIn(pwmPinRcv, HIGH);
+  
 
   if (millis() - lastTriggerTime >= 1) {
     digitalWrite(TRIGGER_PIN, LOW);  
@@ -133,28 +139,33 @@ if (Pulse <= 100){
   }
   else if (Mode == "Idle") {
     for(int i=0; i < NUM_LEDS ; i++) {
-        if(i % 4 <2) {
-          leds[i] = CRGB(255, 102, 0); //safety orange (Kaotic main color)
+      if(i % 8 < 4) {
+        leds[i] = CRGB(255, 102, 0); //safety orange (Kaotic main color)
       } else {
-          leds[i] = CRGB(37, 150, 190); // Eastern blue color (Kaotic secondary color)
-      };
+        leds[i] = CRGB(37, 150, 190); // Eastern blue color (Kaotic secondary color)
+      }
       FastLED.show();
     }
   } else if (Mode == "Auto" && distance > 10) {
     
       fill_solid(leds, NUM_LEDS, CRGB(246, 7, 250)); // Purple color
       FastLED.show();
+      analogWrite(pwmPinSnd, 0); 
 
     }
   else if (Mode == "Auto" && distance < 10) {
         fill_solid(leds, NUM_LEDS, CRGB(7, 246, 250)); // Cyan color
         FastLED.show();
+        analogWrite(pwmPinSnd, dutyCycle);
+
   } else if (Mode == "game time" && distance > 10 ) {
     
       fill_solid(leds, NUM_LEDS, CRGB(255, 0, 0)); // Red color
       FastLED.show();
+      analogWrite(pwmPinSnd, 0);
   } else if (Mode == "game time" && distance < 10 && distance > 0) {
     fill_solid(leds, NUM_LEDS, CRGB(124,252,0)); 
     FastLED.show();
+    analogWrite(pwmPinSnd, dutyCycle);
   }
 }
