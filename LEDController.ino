@@ -4,7 +4,7 @@
 #define TRIGGER_PIN  8  // Arduino pin tied to trigger pin on the ultrasonic sensor.
 #define ECHO_PIN 9 // Arduino pin tied to echo pin on the ultrasonic sensor.
 #define B_PIN 10  // Arduino pin connected to the B wire.
-#define NUM_LEDS 60 // Number of NeoPixels
+#define NUM_LEDS 45 // Number of NeoPixels
 #define pwmPinSnd  3 // Change this to the pin you've connected the PWM signal to
 #define pwmPinRcv 5 // Change this to the pin you've connected the PWM signal to
 
@@ -38,12 +38,12 @@ void setup() {
   for(int i = 0; i < NUM_LEDS; i++) {
     leds[i] = CRGB::White; 
     FastLED.show();
-    delay(100); 
+    delay(200); 
   }
 
-int j = 0; // Initialize j outside of the while loop
+/*int j = 0; // Initialize j outside of the while loop
 
-while(millis() - startTime < runTime && j < 256) { // run for approximately 30 seconds or until j < 256
+while(millis() - startTime < runTime && j < 310) { // run for approximately 30 seconds or until j < 256
   for(int i = 0; i < NUM_LEDS; i++) {
     CRGB color1 = CRGB(255, 102, 0); // safety orange
     CRGB color2 = CRGB(37, 150, 190); // Eastern blue
@@ -76,14 +76,14 @@ for(int j = 0; j < 3; j++) {
   // Fade in
   for(int k = 0; k <= 255; k += 5) {
     for(int i = 0; i < NUM_LEDS; i++) {
-      CRGB color = (i / 4) % 2 == 0 ? CRGB(255, 102, 0) /*safety orange*/ : CRGB(37, 150, 190); /*Eastern blue*/
+      CRGB color = (i / 4) % 2 == 0 ? CRGB(255, 102, 0) /*safety orange*/ /*: CRGB(37, 150, 190); /*Eastern blue*//*
       leds[i] = color;
       leds[i].fadeToBlackBy(255 - k);
     }
     FastLED.show();
     delay(10); 
   }
-}
+}*/
 }
 
 void loop() {
@@ -125,11 +125,13 @@ if (Pulse <= 100){
     // Red color
   fill_solid(leds, NUM_LEDS, CRGB(255, 0, 0));
   FastLED.show();
+  analogWrite(pwmPinSnd, 0);
   delay(1250); // Delay for half a second
 
   // Orange color
   fill_solid(leds, NUM_LEDS, CRGB(255, 102, 0));
   FastLED.show();
+  analogWrite(pwmPinSnd, 255);
   delay(500); // Delay for half a second
   }
   else if (Mode == "Idle") {
