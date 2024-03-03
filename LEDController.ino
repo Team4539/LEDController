@@ -17,8 +17,7 @@ int SND;
 int dutyCycle = 128; // Set the initial duty cycle to 50%.
 unsigned long startTime = millis(); // get the start time
 unsigned long runTime = 30000;
-int i, j, k = 256, 
-waveSpeed = 4 ;
+int delayTime = 30000 / (3 * NUM_LEDS); 
 
 CRGB leds[NUM_LEDS]; // Declare the 'leds' array before calling the 'FastLED.addLeds' function.
 
@@ -34,57 +33,33 @@ void setup() {
   fill_solid(leds, NUM_LEDS, CRGB::Black);
   FastLED.show();
 
-  // Startup sequence
-  for(int i = 0; i < NUM_LEDS; i++) {
-    leds[i] = CRGB::White; 
+  int delayTime = 30000 / (3 * NUM_LEDS); // Total duration is 30000 milliseconds
+
+  int meetPoint = NUM_LEDS / 2;
+  for(int i = 0; i <= meetPoint; i++) {
+    leds[i] = CRGB(255, 102, 0);
+    leds[NUM_LEDS - 1 - i] = CRGB(37, 150, 190);
     FastLED.show();
-    delay(200); 
+    delay(delayTime);
   }
 
-/*int j = 0; // Initialize j outside of the while loop
+  for(int i = 0; i <= meetPoint; i++) {
+    leds[meetPoint - i] = CRGB::White;
+    leds[meetPoint + i] = CRGB::White;
+    FastLED.show();
+    delay(delayTime);
 
-while(millis() - startTime < runTime && j < 310) { // run for approximately 30 seconds or until j < 256
-  for(int i = 0; i < NUM_LEDS; i++) {
-    CRGB color1 = CRGB(255, 102, 0); // safety orange
-    CRGB color2 = CRGB(37, 150, 190); // Eastern blue
-    CRGB color = ((i + j) / waveSpeed) % 2 == 0 ? color1 : color2;
-    leds[i] = CRGB(
-      lerp8by8(leds[i].r, color.r, j),
-      lerp8by8(leds[i].g, color.g, j),
-      lerp8by8(leds[i].b, color.b, j)
-    );
-  }
-  FastLED.show();
-  delay(60);
-  waveSpeed = 4 + log(j+1); // Logarithmic increment for slowing down wave
-  j++; // Increment j at the end of each while loop iteration
-}
-
-  
- 
-  // Smooth blinking
-for(int j = 0; j < 3; j++) {
-  // Fade out
-  for(int k = 255; k >= 0; k -= 5) {
-    for(int i = 0; i < NUM_LEDS; i++) {
-      leds[i].fadeToBlackBy(k);
+    for(int j = 0; j < NUM_LEDS; j++) {
+      if(j % 8 < 4) {
+        leds[j] = CRGB(255, 102, 0); 
+      } else {
+        leds[j] = CRGB(37, 150, 190); 
+      }
     }
     FastLED.show();
-    delay(10); 
   }
-
-  // Fade in
-  for(int k = 0; k <= 255; k += 5) {
-    for(int i = 0; i < NUM_LEDS; i++) {
-      CRGB color = (i / 4) % 2 == 0 ? CRGB(255, 102, 0) /*safety orange*/ /*: CRGB(37, 150, 190); /*Eastern blue*//*
-      leds[i] = color;
-      leds[i].fadeToBlackBy(255 - k);
-    }
-    FastLED.show();
-    delay(10); 
-  }
-}*/
 }
+
 
 void loop() {
   static unsigned long lastTriggerTime = 0;
