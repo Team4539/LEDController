@@ -4,7 +4,7 @@
 #define TRIGGER_PIN  8  // Arduino pin tied to trigger pin on the ultrasonic sensor.
 #define ECHO_PIN 9 // Arduino pin tied to echo pin on the ultrasonic sensor.
 #define B_PIN 10  // Arduino pin connected to the B wire.
-#define NUM_LEDS 45 // Number of NeoPixels
+#define NUM_LEDS 38 // Number of NeoPixels
 #define pwmPinSnd  3 // Change this to the pin you've connected the PWM signal to
 #define pwmPinRcv 5 // Change this to the pin you've connected the PWM signal to
 
@@ -33,33 +33,47 @@ void setup() {
   fill_solid(leds, NUM_LEDS, CRGB::Black);
   FastLED.show();
 
-  int delayTime = 30000 / (3 * NUM_LEDS); // Total duration is 30000 milliseconds
+  int delayTime = 30000 / (2 * NUM_LEDS); // Total duration is 30000 milliseconds
 
   int meetPoint = NUM_LEDS / 2;
   for(int i = 0; i <= meetPoint; i++) {
-    leds[i] = CRGB(255, 102, 0);
-    leds[NUM_LEDS - 1 - i] = CRGB(37, 150, 190);
-    FastLED.show();
-    delay(delayTime);
-  }
+    // Light up the LEDs in sequence with white
+    for(int j = 0; j <= i; j++) {
+      leds[j] = CRGB::White;
+      leds[NUM_LEDS - 1 - j] = CRGB::White;
+      FastLED.show();
+      delay(50); // Adjust speed as needed
+    }
 
-  for(int i = 0; i <= meetPoint; i++) {
-    leds[meetPoint - i] = CRGB::White;
-    leds[meetPoint + i] = CRGB::White;
-    FastLED.show();
-    delay(delayTime);
-
-    for(int j = 0; j < NUM_LEDS; j++) {
-      if(j % 8 < 4) {
-        leds[j] = CRGB(255, 102, 0); 
-      } else {
-        leds[j] = CRGB(37, 150, 190); 
-      }
+    // Set the LEDs to their final colors
+    for(int j = 0; j <= i; j++) {
+      leds[j] = CRGB(255,77,1); // Orange
+      leds[NUM_LEDS - 1 - j] = CRGB(37, 150, 190); // Blue
     }
     FastLED.show();
+    delay(delayTime);
+  }
+  // Send 3 pulses
+  for(int p = 0; p < 5; p++) {
+    for(int i = 0; i <= meetPoint; i++) {
+      // Flash white
+      leds[meetPoint - i] = CRGB::White;
+      leds[meetPoint + i] = CRGB::White;
+      FastLED.show();
+      delay(10);
+
+      // Set every 4 LEDs to orange and blue
+      for(int j = 0; j < NUM_LEDS; j++) {
+        if(j % 8 < 4) {
+          leds[j] = CRGB(255,77,1); // Orange
+        } else {
+          leds[j] = CRGB(37, 150, 190); // Blue
+        }
+      }
+      FastLED.show();
+    }
   }
 }
-
 
 void loop() {
   static unsigned long lastTriggerTime = 0;
@@ -104,7 +118,7 @@ if (Pulse <= 100){
   delay(1250); // Delay for half a second
 
   // Orange color
-  fill_solid(leds, NUM_LEDS, CRGB(255, 102, 0));
+  fill_solid(leds, NUM_LEDS, CRGB(255,77,1));
   FastLED.show();
   analogWrite(pwmPinSnd, 255);
   delay(500); // Delay for half a second
@@ -112,7 +126,7 @@ if (Pulse <= 100){
   else if (Mode == "Idle") {
     for(int i=0; i < NUM_LEDS ; i++) {
       if(i % 8 < 4) {
-        leds[i] = CRGB(255, 102, 0); //safety orange (Kaotic main color)
+        leds[i] = CRGB(255,77,1); //safety orange (Kaotic main color)
       } else {
         leds[i] = CRGB(37, 150, 190); // Eastern blue color (Kaotic secondary color)
       }
