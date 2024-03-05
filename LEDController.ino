@@ -33,7 +33,7 @@ void setup() {
   fill_solid(leds, NUM_LEDS, CRGB::Black);
   FastLED.show();
 
-  int delayTime = 30000 / (2 * NUM_LEDS); // Total duration is 30000 milliseconds
+  int delayTime = 30000 / (NUM_LEDS); // Total duration is 30000 milliseconds
 
   int meetPoint = NUM_LEDS / 2;
   for(int i = 0; i <= meetPoint; i++) {
@@ -53,27 +53,39 @@ void setup() {
     FastLED.show();
     delay(delayTime);
   }
-  // Send 3 pulses
-  for(int p = 0; p < 5; p++) {
+  for(int p = 0; p < 1; p++) {
     for(int i = 0; i <= meetPoint; i++) {
       // Flash white
       leds[meetPoint - i] = CRGB::White;
       leds[meetPoint + i] = CRGB::White;
       FastLED.show();
-      delay(10);
+      delay(50);
 
-      // Set every 4 LEDs to orange and blue
-      for(int j = 0; j < NUM_LEDS; j++) {
-        if(j % 8 < 4) {
-          leds[j] = CRGB(255,77,1); // Orange
-        } else {
-          leds[j] = CRGB(37, 150, 190); // Blue
-        }
+      // Reset to black (or any other color) before setting the final color
+      leds[meetPoint - i] = CRGB::Black;
+      leds[meetPoint + i] = CRGB::Black;
+      FastLED.show();
+      delay(50);
+
+      // Set the LEDs to their final colors
+      if((meetPoint - i) % 8 < 4) {
+        leds[meetPoint - i] = CRGB(255,77,1); // Orange
+      } else {
+        leds[meetPoint - i] = CRGB(37, 150, 190); // Blue
+      }
+
+      if((meetPoint + i) % 8 < 4) {
+        leds[meetPoint + i] = CRGB(255,77,1); // Orange
+      } else {
+        leds[meetPoint + i] = CRGB(37, 150, 190); // Blue
       }
       FastLED.show();
+      delay(50);
     }
   }
-}
+
+  
+  }
 
 void loop() {
   static unsigned long lastTriggerTime = 0;
