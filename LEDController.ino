@@ -33,7 +33,7 @@ void setup() {
   fill_solid(leds, NUM_LEDS, CRGB::Black);
   FastLED.show();
 
-  int delayTime = 30000 / (NUM_LEDS); // Total duration is 30000 milliseconds
+  int delayTime = 36000 / (NUM_LEDS); // Total duration is 30000 milliseconds
 
   int meetPoint = NUM_LEDS / 2;
   for(int i = 0; i <= meetPoint; i++) {
@@ -53,7 +53,7 @@ void setup() {
     FastLED.show();
     delay(delayTime);
   }
-  for(int p = 0; p < 1; p++) {
+  for(int p = 0; p < 3; p++) {
     for(int i = 0; i <= meetPoint; i++) {
       // Flash white
       leds[meetPoint - i] = CRGB::White;
